@@ -1,6 +1,7 @@
 package com.wsw.gankinfo.net;
 
 
+import com.wsw.gankinfo.bean.DailyResult;
 import com.wsw.gankinfo.bean.Result;
 
 import retrofit2.http.GET;
@@ -34,7 +35,7 @@ public interface GankApi {
      * @return 数据
      */
     @GET("day/{year}/{month}/{day}")
-    Observable<Result> getByDay(@Path("year") int year, @Path("month") int month, @Path("day") int day);
+    Observable<DailyResult> getByDay(@Path("year") int year, @Path("month") int month, @Path("day") int day);
 
 
     /**

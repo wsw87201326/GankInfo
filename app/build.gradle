@@ -24,6 +24,10 @@ android {
     dataBinding {
         enabled = true
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -42,4 +46,5 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.google.dagger:dagger:2.7'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
 }
