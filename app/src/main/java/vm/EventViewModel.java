@@ -1,9 +1,7 @@
 package vm;
 
 import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-import com.android.databinding.library.baseAdapters.BR;
+import android.databinding.ObservableField;
 
 import javax.inject.Inject;
 
@@ -15,15 +13,6 @@ public class EventViewModel extends BaseObservable {
     public EventViewModel() {
     }
 
-    private android.view.View.OnClickListener onClick;
+    public final ObservableField<android.view.View.OnClickListener> onClick = new ObservableField<>();
 
-    public void setOnClick(android.view.View.OnClickListener onClick) {
-        this.onClick = onClick;
-        notifyPropertyChanged(BR.onClick);
-    }
-
-    @Bindable
-    public android.view.View.OnClickListener getOnClick() {
-        return this.onClick;
-    }
 }

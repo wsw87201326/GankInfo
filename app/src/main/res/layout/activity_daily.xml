@@ -9,6 +9,10 @@
         <variable
                 name="event"
                 type="vm.EventViewModel"/>
+
+        <variable
+                name="img"
+                type="vm.DailyImgViewModel"/>
     </data>
 
     <android.support.v4.widget.DrawerLayout
@@ -24,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 bind:event="@{event}"
+                bind:img="@{img}"
                 />
 
         <android.support.design.widget.NavigationView

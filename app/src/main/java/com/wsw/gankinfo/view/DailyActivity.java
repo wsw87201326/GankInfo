@@ -3,6 +3,7 @@ package com.wsw.gankinfo.view;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,10 +11,13 @@ import com.wsw.gankinfo.R;
 import com.wsw.gankinfo.databinding.ActivityDailyBinding;
 import com.wsw.gankinfo.di.component.AppComponent;
 import com.wsw.gankinfo.di.component.DaggerDailyComponent;
+import com.wsw.gankinfo.di.module.RecycleViewModule;
 import com.wsw.gankinfo.presenter.DailyPresenter;
+import com.wsw.gankinfo.view.adapter.DailyAdapter;
 
 import javax.inject.Inject;
 
+import vm.DailyImgViewModel;
 import vm.EventViewModel;
 
 public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
@@ -40,16 +44,24 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
 //        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 //        navigationView.setNavigationItemSelectedListener(this);
 //    }
+
     @Inject
     EventViewModel viewEvents;
     @Inject
     DailyPresenter dailyPresenter;
+    @Inject
+    LinearLayoutManager linearLayoutManager;
+    @Inject
+    DailyAdapter dailyAdapter;
+    @Inject
+    DailyImgViewModel dailyImgViewModel;
 
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
         //初始化Dagger依赖
         DaggerDailyComponent.builder()
                 .appComponent(appComponent)
+                .recycleViewModule(new RecycleViewModule(this))
                 .build()
                 .inject(this);
     }
@@ -67,15 +79,15 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
     @Override
     protected void setViews() {
         setSupportActionBar(b.appBarDaily.toolbar);
-        viewEvents.setOnClick(view -> {
-            if (view == b.appBarDaily.fab){
+        viewEvents.onClick.set(view -> {
+            if (view == b.appBarDaily.fab) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-
         });
-
-
+        b.appBarDaily.contentDaily.contentDaily.setLayoutManager(linearLayoutManager);
+        b.appBarDaily.contentDaily.contentDaily.setAdapter(dailyAdapter);
+        dailyAdapter.setActivity(this);
     }
 
     @Override

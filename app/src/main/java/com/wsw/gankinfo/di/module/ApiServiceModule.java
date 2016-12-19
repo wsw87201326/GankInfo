@@ -1,12 +1,15 @@
 package com.wsw.gankinfo.di.module;
 
 
+import com.wsw.gankinfo.BuildConfig;
 import com.wsw.gankinfo.net.GankApi;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,10 +25,20 @@ public class ApiServiceModule {
     @Provides
     @Singleton
     GankApi provideGankApi() {
+        OkHttpClient httpClient;
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient = new OkHttpClient.Builder().addInterceptor(logging).build();
+        } else {
+            httpClient = new OkHttpClient();
+        }
+
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(httpClient)
                 .build().create(GankApi.class);
     }
 }
