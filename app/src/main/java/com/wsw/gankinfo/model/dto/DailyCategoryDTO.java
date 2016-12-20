@@ -116,7 +116,8 @@ public class DailyCategoryDTO implements Mapper<DailyVO> {
     public DailyVO transform() {
         DailyVO dailyVO = new DailyVO();
         dailyVO.setAuthor(who);
-        dailyVO.setTime(createdAt);
+        //这里直接转换日期格式
+        dailyVO.setTime(createdAt.split("T")[0]);
         dailyVO.setDesc(desc);
         dailyVO.setUrl(url);
         dailyVO.setType(type);

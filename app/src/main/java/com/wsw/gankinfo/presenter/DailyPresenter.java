@@ -37,12 +37,15 @@ public class DailyPresenter {
     private DailyImgViewModel dailyImgViewModel;
 
     @Inject
-    public DailyPresenter(Context context, DailyImgViewModel dailyImgViewModel, GankApi gankApi, ObservableArrayList<DailyVO> mList, Calendar calendar) {
+    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList, Calendar calendar) {
         this.context = context;
-        this.dailyImgViewModel = dailyImgViewModel;
         this.gankApi = gankApi;
         this.mList = mList;
         this.calendar = calendar;
+    }
+
+    public void setDailyImgViewModel(DailyImgViewModel dailyImgViewModel) {
+        this.dailyImgViewModel = dailyImgViewModel;
     }
 
     public void attemptGetTodayData() {
@@ -55,6 +58,7 @@ public class DailyPresenter {
 //        gankApi.getByDay(year, mouth, date)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .map(dailyDTO -> {
                     Log.e("DailyPresenter","First map :" +Thread.currentThread().getName());
                     return dailyDTO.getResults();
@@ -82,11 +86,13 @@ public class DailyPresenter {
                         return Observable.from(list);
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(dailyVO -> {
                     Log.e("DailyPresenter","filter:" +Thread.currentThread().getName());
                     if (dailyVO.getType().equals("福利")) {
+                        Log.e("DailyPresenter",dailyImgViewModel.toString());
                         dailyImgViewModel.url.set(dailyVO.getUrl());
-                        dailyImgViewModel.url.set(dailyVO.getTime());
+                        dailyImgViewModel.time.set(dailyVO.getTime());
                         return false;
                     }
                     return true;

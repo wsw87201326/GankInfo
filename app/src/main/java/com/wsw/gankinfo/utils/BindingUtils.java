@@ -13,6 +13,7 @@ public class BindingUtils {
 
     @BindingAdapter({"image"})
     public static void imageLoader(ImageView imageView, String url) {
+        System.out.println(url);
         Glide.with(imageView.getContext()).load(url).into(imageView);
     }
 }

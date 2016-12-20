@@ -10,11 +10,10 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/GankIo">
         <activity
                 android:name=".view.DailyActivity"
-                android:label="@string/title_activity_daily"
-                android:theme="@style/AppTheme.NoActionBar">
+                android:theme="@style/GankIo.Daily">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -22,6 +21,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.DetailActivity">
+        </activity>
+
+        <activity
+                android:theme="@style/GankIo.Translucent.DatePicker"
+                android:exported="false"
+                android:name=".view.DatePickerActivity">
         </activity>
     </application>
 

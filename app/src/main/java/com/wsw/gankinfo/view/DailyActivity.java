@@ -1,6 +1,8 @@
 package com.wsw.gankinfo.view;
 
-import android.support.design.widget.Snackbar;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import com.wsw.gankinfo.di.component.DaggerDailyComponent;
 import com.wsw.gankinfo.di.module.RecycleViewModule;
 import com.wsw.gankinfo.presenter.DailyPresenter;
 import com.wsw.gankinfo.view.adapter.DailyAdapter;
+import com.wsw.gankinfo.view.transitions.FabTransform;
 
 import javax.inject.Inject;
 
@@ -56,6 +59,9 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
     @Inject
     DailyImgViewModel dailyImgViewModel;
 
+
+    public static final int CHOICE_DATE = 0;
+
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
         //初始化Dagger依赖
@@ -74,6 +80,9 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
     @Override
     protected void beforeSetViews() {
         b.setEvent(viewEvents);
+        b.setImg(dailyImgViewModel);
+        dailyAdapter.setActivity(this);
+        dailyPresenter.setDailyImgViewModel(dailyImgViewModel);
     }
 
     @Override
@@ -81,13 +90,18 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
         setSupportActionBar(b.appBarDaily.toolbar);
         viewEvents.onClick.set(view -> {
             if (view == b.appBarDaily.fab) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(this, DatePickerActivity.class);
+                FabTransform.addExtras(intent,
+                        ContextCompat.getColor(this, R.color.accent), R.drawable.ic_today_black_24dp);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, b.appBarDaily.fab,
+                        getString(R.string.transition_date_picker));
+                startActivityForResult(intent, CHOICE_DATE, options.toBundle());
             }
         });
         b.appBarDaily.contentDaily.contentDaily.setLayoutManager(linearLayoutManager);
         b.appBarDaily.contentDaily.contentDaily.setAdapter(dailyAdapter);
-        dailyAdapter.setActivity(this);
     }
 
     @Override
