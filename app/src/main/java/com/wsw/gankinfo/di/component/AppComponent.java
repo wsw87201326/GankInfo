@@ -7,6 +7,8 @@ import com.wsw.gankinfo.di.module.ApiServiceModule;
 import com.wsw.gankinfo.di.module.AppModule;
 import com.wsw.gankinfo.net.GankApi;
 
+import java.util.Calendar;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -20,4 +22,6 @@ public interface AppComponent {
     GankApi gankApi();
 
     Context context();
+
+    Calendar calendar();
 }

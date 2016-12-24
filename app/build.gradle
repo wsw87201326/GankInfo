@@ -51,4 +51,6 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    // view
+    compile 'com.prolificinteractive:material-calendarview:1.4.2'
 }

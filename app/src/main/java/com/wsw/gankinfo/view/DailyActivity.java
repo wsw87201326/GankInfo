@@ -1,11 +1,13 @@
 package com.wsw.gankinfo.view;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,12 +20,15 @@ import com.wsw.gankinfo.presenter.DailyPresenter;
 import com.wsw.gankinfo.view.adapter.DailyAdapter;
 import com.wsw.gankinfo.view.transitions.FabTransform;
 
+import java.util.Calendar;
+
 import javax.inject.Inject;
 
 import vm.DailyImgViewModel;
 import vm.EventViewModel;
 
 public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
+    private static final String TAG = "DailyActivity";
 
     //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,8 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
     DailyAdapter dailyAdapter;
     @Inject
     DailyImgViewModel dailyImgViewModel;
-
+    @Inject
+    Calendar calendar;
 
     public static final int CHOICE_DATE = 0;
 
@@ -90,8 +96,6 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
         setSupportActionBar(b.appBarDaily.toolbar);
         viewEvents.onClick.set(view -> {
             if (view == b.appBarDaily.fab) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Intent intent = new Intent(this, DatePickerActivity.class);
                 FabTransform.addExtras(intent,
                         ContextCompat.getColor(this, R.color.accent), R.drawable.ic_today_black_24dp);
@@ -100,13 +104,15 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
                 startActivityForResult(intent, CHOICE_DATE, options.toBundle());
             }
         });
+
         b.appBarDaily.contentDaily.contentDaily.setLayoutManager(linearLayoutManager);
         b.appBarDaily.contentDaily.contentDaily.setAdapter(dailyAdapter);
     }
 
     @Override
     protected void doTransaction() {
-        dailyPresenter.attemptGetTodayData();
+        dailyPresenter.attemptGetDataByTime(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
     }
 
     @Override
@@ -162,5 +168,20 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CHOICE_DATE:
+                if (resultCode == Activity.RESULT_OK) {
+                    int year = data.getIntExtra("year", calendar.get(Calendar.YEAR));
+                    int mouth = data.getIntExtra("month", calendar.get(Calendar.MONTH) + 1);
+                    int date = data.getIntExtra("date", calendar.get(Calendar.DATE));
+                    Log.i(TAG, "onActivityResult: " + year + "-" + mouth + "-" + date);
+                    dailyPresenter.attemptGetDataByTime(year, mouth, date);
+                }
+                break;
+        }
     }
 }

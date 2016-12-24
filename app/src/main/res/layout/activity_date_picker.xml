@@ -34,10 +34,13 @@
                 android:clickable="true"
                 android:transitionName="@string/transition_date_picker">
 
-            <CalendarView
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/calendarView"/>
+                    app:mcv_showOtherDates="all"
+                    app:mcv_selectionColor="#00F"
+                    />
 
             <Button
                     android:id="@+id/choice"

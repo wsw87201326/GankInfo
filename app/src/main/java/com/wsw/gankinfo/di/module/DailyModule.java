@@ -8,8 +8,6 @@ import com.wsw.gankinfo.di.AppScope;
 import com.wsw.gankinfo.model.vo.DailyVO;
 import com.wsw.gankinfo.view.adapter.DailyAdapter;
 
-import java.util.Calendar;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -23,12 +21,6 @@ public class DailyModule {
 
     public DailyModule() {
         mList = new ObservableArrayList<>();
-    }
-
-    @Provides
-    @AppScope
-    Calendar provideCalendar() {
-        return Calendar.getInstance();
     }
 
     @Provides

@@ -9,7 +9,6 @@ import com.wsw.gankinfo.model.dto.DailyDTO;
 import com.wsw.gankinfo.model.vo.DailyVO;
 import com.wsw.gankinfo.net.GankApi;
 import com.wsw.gankinfo.utils.DailyUtils;
-import com.wsw.gankinfo.utils.TestUrils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,36 +36,26 @@ public class DailyPresenter {
     private DailyImgViewModel dailyImgViewModel;
 
     @Inject
-    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList, Calendar calendar) {
+    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList) {
         this.context = context;
         this.gankApi = gankApi;
         this.mList = mList;
-        this.calendar = calendar;
     }
 
     public void setDailyImgViewModel(DailyImgViewModel dailyImgViewModel) {
         this.dailyImgViewModel = dailyImgViewModel;
     }
 
-    public void attemptGetTodayData() {
-        int year = calendar.get(Calendar.YEAR);
-        int mouth = calendar.get(Calendar.MONTH) + 1;
-        int date = calendar.get(Calendar.DATE);
-
-
-        Observable.just(TestUrils.getByTest())
-//        gankApi.getByDay(year, mouth, date)
+    public void attemptGetDataByTime(int year, int mouth, int date) {
+//        Observable.just(TestUrils.getByTest())
+        gankApi.getByDay(year, mouth, date)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .map(DailyDTO::getResults)
                 .observeOn(Schedulers.io())
-                .map(dailyDTO -> {
-                    Log.e("DailyPresenter","First map :" +Thread.currentThread().getName());
-                    return dailyDTO.getResults();
-                })
                 .flatMap(new Func1<DailyDTO.ResultsBean, Observable<List<DailyCategoryDTO>>>() {
                     @Override
                     public Observable<List<DailyCategoryDTO>> call(DailyDTO.ResultsBean resultsBean) {
-                        Log.e("DailyPresenter","First flatMap :" +Thread.currentThread().getName());
                         return Observable.just(resultsBean.getAndroid(), resultsBean.getBoon(),
                                 resultsBean.getFrontEnd(), resultsBean.getiOS(),
                                 resultsBean.getRandom(), resultsBean.getRestVideo());
@@ -75,9 +64,8 @@ public class DailyPresenter {
                 .flatMap(new Func1<List<DailyCategoryDTO>, Observable<DailyVO>>() {
                     @Override
                     public Observable<DailyVO> call(List<DailyCategoryDTO> dailyCategoryDTOs) {
-                        Log.e("DailyPresenter","Two flatMap :" +Thread.currentThread().getName());
                         List<DailyVO> list = new ArrayList<>();
-                        if(null != dailyCategoryDTOs){
+                        if (null != dailyCategoryDTOs) {
                             for (DailyCategoryDTO dailyCategoryDTO : dailyCategoryDTOs) {
                                 list.add(dailyCategoryDTO.transform());
                             }
@@ -88,9 +76,7 @@ public class DailyPresenter {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(dailyVO -> {
-                    Log.e("DailyPresenter","filter:" +Thread.currentThread().getName());
                     if (dailyVO.getType().equals("福利")) {
-                        Log.e("DailyPresenter",dailyImgViewModel.toString());
                         dailyImgViewModel.url.set(dailyVO.getUrl());
                         dailyImgViewModel.time.set(dailyVO.getTime());
                         return false;
@@ -100,18 +86,18 @@ public class DailyPresenter {
                 .subscribe(new Subscriber<DailyVO>() {
                     @Override
                     public void onCompleted() {
-                        Log.i(TAG,"onCompleted");
+                        Log.i(TAG, "onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        Log.e(TAG,"onError");
+                        Log.e(TAG, "onError");
                     }
 
                     @Override
                     public void onNext(DailyVO dailyVO) {
-                        Log.e("DailyPresenter","subscribe:" +Thread.currentThread().getName());
+                        Log.e("DailyPresenter", "subscribe:" + Thread.currentThread().getName());
                         mList.add(dailyVO);
                     }
                 });
