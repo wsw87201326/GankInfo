@@ -3,7 +3,9 @@ package com.wsw.gankinfo.presenter;
 import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.wsw.gankinfo.greendao.gen.CookieResultDao;
 import com.wsw.gankinfo.model.dto.DailyCategoryDTO;
 import com.wsw.gankinfo.model.dto.DailyDTO;
 import com.wsw.gankinfo.model.vo.DailyVO;
@@ -34,12 +36,14 @@ public class DailyPresenter {
     private ObservableArrayList<DailyVO> mList; // 界面的数据对象
     private Calendar calendar;
     private DailyImgViewModel dailyImgViewModel;
+    private CookieResultDao cookieResultDao;
 
     @Inject
-    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList) {
+    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList, CookieResultDao cookieResultDao) {
         this.context = context;
         this.gankApi = gankApi;
         this.mList = mList;
+        this.cookieResultDao = cookieResultDao;
     }
 
     public void setDailyImgViewModel(DailyImgViewModel dailyImgViewModel) {
@@ -49,7 +53,6 @@ public class DailyPresenter {
     public void attemptGetDataByTime(int year, int mouth, int date) {
 //        Observable.just(TestUrils.getByTest())
         gankApi.getByDay(year, mouth, date)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map(DailyDTO::getResults)
                 .observeOn(Schedulers.io())
@@ -61,6 +64,13 @@ public class DailyPresenter {
                                 resultsBean.getRandom(), resultsBean.getRestVideo());
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(dailyVO -> {
+                    if (mList.size() != 0) {
+                        mList.clear();
+                    }
+                })
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<DailyCategoryDTO>, Observable<DailyVO>>() {
                     @Override
                     public Observable<DailyVO> call(List<DailyCategoryDTO> dailyCategoryDTOs) {
@@ -84,15 +94,35 @@ public class DailyPresenter {
                     return true;
                 })
                 .subscribe(new Subscriber<DailyVO>() {
+
+                    @Override
+                    public void onStart() {
+                        // TODO: 2017/1/3 判断网络是否可用
+//                            CookieResulte cookieResulte = cookieResultDao.(api.getUrl());
+//                            if (cookieResulte != null) {
+//                                long time = (System.currentTimeMillis() - cookieResulte.getTime()) / 1000;
+//                                if (time < api.getCookieNetWorkTime()) {
+//                                    if (mSubscriberOnNextListener.get() != null) {
+//                                        mSubscriberOnNextListener.get().onCacheNext(cookieResulte.getResulte());
+//                                    }
+//                                    onCompleted();
+//                                    unsubscribe();
+//                                }
+//                            }
+                        }
+
                     @Override
                     public void onCompleted() {
                         Log.i(TAG, "onCompleted");
+                        unsubscribe();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        // TODO: 2016/12/26 错误处理
                         e.printStackTrace();
                         Log.e(TAG, "onError");
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
 
                     @Override

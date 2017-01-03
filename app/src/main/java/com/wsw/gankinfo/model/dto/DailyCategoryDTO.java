@@ -4,7 +4,7 @@ import com.wsw.gankinfo.model.Mapper;
 import com.wsw.gankinfo.model.vo.DailyVO;
 
 /**
- * Created by wsw on 2016/12/11.
+ * 具体内部数据 Created by wsw on 2016/12/11.
  */
 @SuppressWarnings("unused")
 public class DailyCategoryDTO implements Mapper<DailyVO> {

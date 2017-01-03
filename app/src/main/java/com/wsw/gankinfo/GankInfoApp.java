@@ -7,6 +7,7 @@ import com.wsw.gankinfo.di.component.AppComponent;
 import com.wsw.gankinfo.di.component.DaggerAppComponent;
 import com.wsw.gankinfo.di.module.ApiServiceModule;
 import com.wsw.gankinfo.di.module.AppModule;
+import com.wsw.gankinfo.di.module.CacheServiceModule;
 
 /**
  * Created by wsw on 2016/12/6.
@@ -21,6 +22,7 @@ public class GankInfoApp extends Application {
         super.onCreate();
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
+                .cacheServiceModule(new CacheServiceModule(this))
                 .apiServiceModule(new ApiServiceModule())
                 .build();
     }
