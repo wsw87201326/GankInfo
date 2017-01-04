@@ -6,8 +6,8 @@ import com.wsw.gankinfo.GankInfoApp;
 import com.wsw.gankinfo.di.module.ApiServiceModule;
 import com.wsw.gankinfo.di.module.AppModule;
 import com.wsw.gankinfo.di.module.CacheServiceModule;
-import com.wsw.gankinfo.greendao.gen.CookieResultDao;
 import com.wsw.gankinfo.net.GankApi;
+import com.wsw.gankinfo.utils.DbUtils;
 
 import java.util.Calendar;
 
@@ -27,5 +27,5 @@ public interface AppComponent {
 
     Calendar calendar();
 
-    CookieResultDao cookieResultDao();
+    DbUtils dbUtils();
 }

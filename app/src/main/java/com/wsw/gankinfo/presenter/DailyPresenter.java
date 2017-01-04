@@ -5,18 +5,16 @@ import android.databinding.ObservableArrayList;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.wsw.gankinfo.greendao.gen.CookieResultDao;
 import com.wsw.gankinfo.model.dto.DailyCategoryDTO;
 import com.wsw.gankinfo.model.dto.DailyDTO;
 import com.wsw.gankinfo.model.vo.DailyVO;
 import com.wsw.gankinfo.net.GankApi;
 import com.wsw.gankinfo.utils.DailyUtils;
+import com.wsw.gankinfo.utils.DbUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -28,7 +26,6 @@ import vm.DailyImgViewModel;
 /**
  * Create By :wsw 2016-08-31 16:58
  */
-
 public class DailyPresenter {
     private static final String TAG = "DailyPresenter";
     private GankApi gankApi;
@@ -36,14 +33,13 @@ public class DailyPresenter {
     private ObservableArrayList<DailyVO> mList; // 界面的数据对象
     private Calendar calendar;
     private DailyImgViewModel dailyImgViewModel;
-    private CookieResultDao cookieResultDao;
+    private DbUtils dbUtils;
 
-    @Inject
-    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList, CookieResultDao cookieResultDao) {
+    public DailyPresenter(Context context, GankApi gankApi, ObservableArrayList<DailyVO> mList, DbUtils dbUtils) {
         this.context = context;
         this.gankApi = gankApi;
         this.mList = mList;
-        this.cookieResultDao = cookieResultDao;
+        this.dbUtils = dbUtils;
     }
 
     public void setDailyImgViewModel(DailyImgViewModel dailyImgViewModel) {
@@ -94,22 +90,6 @@ public class DailyPresenter {
                     return true;
                 })
                 .subscribe(new Subscriber<DailyVO>() {
-
-                    @Override
-                    public void onStart() {
-                        // TODO: 2017/1/3 判断网络是否可用
-//                            CookieResulte cookieResulte = cookieResultDao.(api.getUrl());
-//                            if (cookieResulte != null) {
-//                                long time = (System.currentTimeMillis() - cookieResulte.getTime()) / 1000;
-//                                if (time < api.getCookieNetWorkTime()) {
-//                                    if (mSubscriberOnNextListener.get() != null) {
-//                                        mSubscriberOnNextListener.get().onCacheNext(cookieResulte.getResulte());
-//                                    }
-//                                    onCompleted();
-//                                    unsubscribe();
-//                                }
-//                            }
-                        }
 
                     @Override
                     public void onCompleted() {

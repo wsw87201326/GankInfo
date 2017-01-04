@@ -1,11 +1,15 @@
 package com.wsw.gankinfo.di.module;
 
 
+import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 
 import com.wsw.gankinfo.di.AppScope;
 import com.wsw.gankinfo.model.vo.DailyVO;
+import com.wsw.gankinfo.net.GankApi;
+import com.wsw.gankinfo.presenter.DailyPresenter;
+import com.wsw.gankinfo.utils.DbUtils;
 import com.wsw.gankinfo.view.adapter.DailyAdapter;
 
 import dagger.Module;
@@ -63,6 +67,12 @@ public class DailyModule {
             }
         });
         return dailyAdapter;
+    }
+
+    @Provides
+    @AppScope
+    DailyPresenter provideDailyPresenter(Context context, GankApi gankApi, DbUtils dbUtils) {
+        return new DailyPresenter(context,gankApi,mList,dbUtils);
     }
 
 

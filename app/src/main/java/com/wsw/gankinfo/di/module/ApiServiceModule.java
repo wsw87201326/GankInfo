@@ -2,6 +2,7 @@ package com.wsw.gankinfo.di.module;
 
 
 import com.wsw.gankinfo.BuildConfig;
+import com.wsw.gankinfo.net.CookieInterceptor;
 import com.wsw.gankinfo.net.GankApi;
 
 import javax.inject.Singleton;
@@ -24,12 +25,15 @@ public class ApiServiceModule {
     // Retrofit 2.0的请求
     @Provides
     @Singleton
-    GankApi provideGankApi() {
+    GankApi provideGankApi(CookieInterceptor cookieInterceptor) {
         OkHttpClient httpClient;
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            httpClient = new OkHttpClient.Builder().addInterceptor(logging).build();
+            httpClient = new OkHttpClient.Builder()
+                    .addNetworkInterceptor(cookieInterceptor)
+                    .addInterceptor(cookieInterceptor)
+                    .addInterceptor(logging).build();
         } else {
             httpClient = new OkHttpClient();
         }

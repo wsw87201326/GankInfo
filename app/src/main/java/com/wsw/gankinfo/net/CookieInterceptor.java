@@ -1,7 +1,9 @@
 package com.wsw.gankinfo.net;
 
+import android.util.Log;
+
 import com.wsw.gankinfo.bean.CookieResult;
-import com.wsw.gankinfo.greendao.gen.CookieResultDao;
+import com.wsw.gankinfo.utils.DbUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -20,12 +22,12 @@ import okio.BufferedSource;
  * 缓存拦截器,主要用于存入数据库 Created by wsw on 2016/12/28.
  */
 public class CookieInterceptor implements Interceptor {
-
-    private CookieResultDao cookieResultDao;
+    private static final String TAG = "CookieInterceptor";
+    private DbUtils dbUtils;
 
     @Inject
-    public CookieInterceptor(CookieResultDao cookieResultDao) {
-        this.cookieResultDao = cookieResultDao;
+    public CookieInterceptor(DbUtils dbUtils) {
+        this.dbUtils = dbUtils;
     }
 
     @Override
@@ -48,18 +50,17 @@ public class CookieInterceptor implements Interceptor {
         //获取url
         String url = request.url().toString();
         //greenDao中查找数据
-        CookieResult result = cookieResultDao.queryBuilder().where(CookieResultDao.Properties.Url.eq(url)).build().unique();
-        //获取当前时间
-        long time = System.currentTimeMillis();
+        CookieResult cookieResult = dbUtils.queryByUrl(url);
+            long time = System.currentTimeMillis();
+            if (null != cookieResult) {
+                cookieResult.setResult(bodyString);
+                cookieResult.setTime(time);
+                dbUtils.updateData(cookieResult);
+            } else {
+                Log.i(TAG,"save to db....");
 
-        if (result == null) {   //如果为空,则向数据库中插入数据
-            result = new CookieResult(url, bodyString, time);
-            cookieResultDao.insert(result);
-        } else {    //不为空则更新数据,设置时间
-            result.setResult(bodyString);
-            result.setTime(time);
-            cookieResultDao.update(result);
-        }
+                dbUtils.insertData(new CookieResult(null,url, bodyString, time));
+            }
 
         return response;
     }
