@@ -1,5 +1,7 @@
 package com.wsw.gankinfo.di.component;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 
 import com.wsw.gankinfo.GankInfoApp;
@@ -28,4 +30,6 @@ public interface AppComponent {
     Calendar calendar();
 
     DbUtils dbUtils();
+
+    Gson gson();
 }

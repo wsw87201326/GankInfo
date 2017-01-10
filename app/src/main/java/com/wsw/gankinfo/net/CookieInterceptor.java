@@ -58,7 +58,6 @@ public class CookieInterceptor implements Interceptor {
                 dbUtils.updateData(cookieResult);
             } else {
                 Log.i(TAG,"save to db....");
-
                 dbUtils.insertData(new CookieResult(null,url, bodyString, time));
             }
 

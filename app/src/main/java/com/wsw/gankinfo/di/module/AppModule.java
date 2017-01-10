@@ -1,5 +1,7 @@
 package com.wsw.gankinfo.di.module;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 
 import java.util.Calendar;
@@ -28,4 +30,11 @@ public class AppModule {
     Calendar provideCalendar() {
         return Calendar.getInstance();
     }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        return new Gson();
+    }
+
 }
