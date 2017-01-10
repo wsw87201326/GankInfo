@@ -12,7 +12,7 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by wsw on 2016/12/8.
+ * 用于提供主页所需部件 Created by wsw on 2016/12/8.
  */
 @Module
 public class DailyModule {
@@ -64,6 +64,5 @@ public class DailyModule {
         });
         return dailyAdapter;
     }
-
 
 }

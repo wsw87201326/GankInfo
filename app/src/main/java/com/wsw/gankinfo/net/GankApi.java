@@ -14,6 +14,8 @@ import rx.Observable;
 @SuppressWarnings("unused")
 public interface GankApi {
 
+    String BASE_URL = "http://gank.io/api/";
+
     /**
      * 根据类别获取数据 http://gank.io/api/data/数据类型/请求个数/第几页
      *
@@ -58,4 +60,12 @@ public interface GankApi {
     @GET("search/query/listview/category/{type}/count/{count}/page/{pagination}")
     Observable<Result> search(@Path("type") String type, @Path("count") int count, @Path("pagination") int pagination);
 
+
+    /**
+     * 获取发布干货的日期
+     *
+     * @return
+     */
+    @GET("day/history")
+    Observable<Result> getRecentlyDate();
 }

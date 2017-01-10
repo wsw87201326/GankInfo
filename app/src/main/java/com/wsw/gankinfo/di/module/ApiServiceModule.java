@@ -2,6 +2,7 @@ package com.wsw.gankinfo.di.module;
 
 
 import com.wsw.gankinfo.BuildConfig;
+import com.wsw.gankinfo.net.CookieInterceptor;
 import com.wsw.gankinfo.net.GankApi;
 
 import javax.inject.Singleton;
@@ -14,22 +15,26 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.wsw.gankinfo.net.GankApi.BASE_URL;
+
 /**
  * 提供APIServer的类 Create By :wsw 2016-12-06 21:31
  */
 @Module
 public class ApiServiceModule {
-    private static final String BASE_URL = "http://gank.io/api/";
 
     // Retrofit 2.0的请求
     @Provides
     @Singleton
-    GankApi provideGankApi() {
+    GankApi provideGankApi(CookieInterceptor cookieInterceptor) {
         OkHttpClient httpClient;
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            httpClient = new OkHttpClient.Builder().addInterceptor(logging).build();
+            httpClient = new OkHttpClient.Builder()
+                    .addNetworkInterceptor(cookieInterceptor)
+                    .addInterceptor(cookieInterceptor)
+                    .addInterceptor(logging).build();
         } else {
             httpClient = new OkHttpClient();
         }

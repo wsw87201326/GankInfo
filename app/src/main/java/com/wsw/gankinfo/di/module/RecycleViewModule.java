@@ -9,7 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by wsw on 2016/12/15.
+ * 主要提供RecycleView所需要的部件 Created by wsw on 2016/12/15.
  */
 @Module
 public class RecycleViewModule {

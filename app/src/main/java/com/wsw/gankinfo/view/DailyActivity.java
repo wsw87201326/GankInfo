@@ -12,18 +12,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.wsw.gankinfo.R;
+import com.wsw.gankinfo.bean.CookieResult;
 import com.wsw.gankinfo.databinding.ActivityDailyBinding;
 import com.wsw.gankinfo.di.component.AppComponent;
 import com.wsw.gankinfo.di.component.DaggerDailyComponent;
 import com.wsw.gankinfo.di.module.RecycleViewModule;
 import com.wsw.gankinfo.presenter.DailyPresenter;
+import com.wsw.gankinfo.utils.DbUtils;
 import com.wsw.gankinfo.view.adapter.DailyAdapter;
 import com.wsw.gankinfo.view.transitions.FabTransform;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import vm.DailyImgViewModel;
 import vm.EventViewModel;
 
@@ -65,6 +69,8 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
     DailyImgViewModel dailyImgViewModel;
     @Inject
     Calendar calendar;
+    @Inject
+    DbUtils dbUtils;
 
     public static final int CHOICE_DATE = 0;
 
@@ -140,6 +146,22 @@ public class DailyActivity extends BaseActivity<ActivityDailyBinding> {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            dbUtils.queryAllRx().subscribe(new Subscriber<List<CookieResult>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<CookieResult> cookieResults) {
+                    Log.i(TAG,String.valueOf(cookieResults.size()));
+                }
+            });
             return true;
         }
 
